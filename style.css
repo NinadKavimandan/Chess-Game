@@ -1,0 +1,63 @@
+body {
+	margin: 0px;
+	background-color: grey;
+}
+div#board {
+	min-width: 300px;
+	margin: auto;
+	margin-top: 1%;
+	width: 40%;
+	//overflow-x: allow;
+	min-height: 300px;
+	height: 50%;
+	border: 1px solid #CCC;
+	//padding-top: 100%;
+}
+.cell {
+	//position: absolute;
+	width: 12.5%;
+	height: 12.5%;
+	min-width: 37.5px;
+	min-height: 37.5px;
+	float: left;
+	//border: 0.01px solid #CCC;
+}
+.pieces {
+	width: 100%;
+	cursor: -webkit-grab;
+}
+.pieces:after {
+	//width: 100%;
+	cursor: -webkit-grabbing;
+}
+div#queryConsole {
+	margin-top: 100px;
+	width: 100%;
+	height: auto;
+	background-color: white;
+	max-height: 300px;
+	overflow-y: auto;
+}
+.queryLine {
+	width: 100%;
+	color: black;
+	border-bottom: 1px solid #333;
+}
+div#white {
+	margin: auto;
+	margin-top: 2%;
+	height: 20px;
+}
+div#black {
+	margin: auto;
+	height: 20px;
+}
+div#result {
+	text-align: center;
+	height: 20px;
+	font-size: 20px;
+	color: white;
+	margin: auto;
+	margin-top: 5px;
+	font-family: HelveticaNeue;
+}
