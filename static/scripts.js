@@ -9,8 +9,8 @@ var turn = 0;
 var playerColr = ["White","Black"];
 var turnColr = ["w","b"];
 var kingName = ["Black King","White King"];
-var wp = ["./merida/merida/80/wr.PNG","./merida/merida/80/wn.PNG","./merida/merida/80/wb.PNG","./merida/merida/80/wq.PNG","./merida/merida/80/wk.PNG","./merida/merida/80/wp.PNG"];
-var bp = ["./merida/merida/80/br.PNG","./merida/merida/80/bn.PNG","./merida/merida/80/bb.PNG","./merida/merida/80/bq.PNG","./merida/merida/80/bk.PNG","./merida/merida/80/bp.PNG"];
+var wp = ["../static/80/wr.PNG","../static/80/wn.PNG","../static/80/wb.PNG","../static/80/wq.PNG","../static/80/wk.PNG","../static/80/wp.PNG"];
+var bp = ["../static/80/br.PNG","../static/80/bn.PNG","../static/80/bb.PNG","../static/80/bq.PNG","../static/80/bk.PNG","../static/80/bp.PNG"];
 var cellNum  = [];
 var killedPiece = {
 	bp1:'#',
@@ -46,7 +46,7 @@ var killedPiece = {
 	wn2:'#',
 	wr2:'#'
 };
-var pics = ["./merida/merida/80/wr.PNG","./merida/merida/80/wn.PNG","./merida/merida/80/wb.PNG","./merida/merida/80/wq.PNG","./merida/merida/80/wk.PNG","./merida/merida/80/wp.PNG","./merida/merida/80/br.PNG","./merida/merida/80/bn.PNG","./merida/merida/80/bb.PNG","./merida/merida/80/bq.PNG","./merida/merida/80/bk.PNG","./merida/merida/80/bp.PNG"];
+var pics = ["/static/80/wr.PNG","../static/80/wn.PNG","../static/80/wb.PNG","../static/80/wq.PNG","../static/80/wk.PNG","../static/80/wp.PNG","../static/80/br.PNG","../static/80/bn.PNG","../static/80/bb.PNG","../static/80/bq.PNG","../static/80/bk.PNG","../static/80/bp.PNG"];
 var pieceLoc = {
 	bp1:'a2',
 	bp2:'b2',
