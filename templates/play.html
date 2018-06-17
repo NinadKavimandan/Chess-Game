@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Chess | {{ session.get('name') }}</title>
+	<link href="/static/style.css" rel="stylesheet">
+	<link href="/static/jquery-ui.min.css" rel="stylesheet">
+	<script src="/static/jquery.min.js" type="text/javascript"></script>
+	<script src="/static/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="/static/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
+	<script type='text/javascript' src='/static/socketio.min.js'></script>
+	<script src="/static/scripts.js" type="text/javascript"></script>
+	<script src="/static/boardConfig.js" type="text/javascript"></script>
+	<script src="/static/operations.js" type="text/javascript"></script>
+</head>
+<body>
+  <div id="whitepl" class="nametag">{{game.white}}</div>
+	<div id="white"></div>
+	<div id="board"></div></br>
+	<div id="black"></div>
+  <div id="blackpl" class="nametag">{{game.black}}</div>
+	<div id="result"></div>
+	<div id="boardinfo" style="width: 100%; height: auto;"></div>
+</body>
+</html>

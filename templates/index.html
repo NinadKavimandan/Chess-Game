@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="/static/initial.css" rel="stylesheet"></link>
+</head>
+<body>
+  <div id="loginBox">
+  </br></br>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      {{ form.name.label }}: {{ form.name() }} {% for error in form.name.errors %}{{ error }}{% endfor %}<br>
+      {{ form.submit() }}
+    </form>
+  </div>
+</body>
+</html>

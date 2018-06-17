@@ -45,12 +45,11 @@ div#queryConsole {
 }
 div#white {
 	margin: auto;
-	margin-top: 2%;
-	height: 20px;
+	height: 10px;
 }
 div#black {
 	margin: auto;
-	height: 20px;
+	height: 10px;
 }
 div#result {
 	text-align: center;
@@ -60,4 +59,10 @@ div#result {
 	margin: auto;
 	margin-top: 5px;
 	font-family: HelveticaNeue;
+}
+
+.nametag {
+	width: 100%;
+	font-size: 24px;
+	text-align: center;
 }

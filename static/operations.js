@@ -1,9 +1,225 @@
-function queryExecutor(query) {
-	var pos = query.substring(query.length-2,query.length);
-	var loc = findCell(pos);
-	var pieceName = query.substring(0,1);
-	console.log("$"+pos);
+function getElePrefix(ele)
+{
+	return ele.toUpperCase()[1];
 }
+function queryExecutor(qStr)
+{
+	var piece =  qStr.substring(0,1);
+	var qColr = turnColr[turn];
+	var len = qStr.length;
+	var targetCell = qStr.substring(len-2, len);
+	console.log("Target: "+targetCell);
+	switch(piece)
+	{
+		case "N":
+			var cPiece = qColr + "n";
+			for(piece in pieceLoc)
+			{
+				if(piece.substring(0,2) == cPiece)
+				{
+					var curCell = pieceLoc[piece];
+					console.log("Checking "+piece+" base loc "+curCell);
+					var r = cols.indexOf(curCell.substring(0,1));
+					var c = rows.indexOf(curCell.substring(1,2));
+					horsePath(curCell, r, c);
+					if(allowedCells.indexOf(targetCell) > -1)
+					{
+						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
+						if(qStr.substring(1,2) == "x") killIt(targetCell);
+						movePiece(piece, targetCell);
+						pieceLoc[piece] = targetCell;
+						turn = 1 - turn;
+						break;
+					}
+				}
+			}
+			allowedCells = [];
+			break;
+		case "R":
+			var cPiece = qColr + "r";
+			for(piece in pieceLoc)
+			{
+				if(piece.substring(0,2) == cPiece)
+				{
+					var curCell = pieceLoc[piece];
+					console.log("Checking "+piece+" base loc "+curCell);
+					var r = cols.indexOf(curCell.substring(0,1));
+					var c = rows.indexOf(curCell.substring(1,2));
+					traversePath(curCell,r,c,1,0);
+					traversePath(curCell,r,c,-1,0);
+					traversePath(curCell,r,c,0,1);
+					traversePath(curCell,r,c,0,-1);
+					if(allowedCells.indexOf(targetCell) > -1)
+					{
+						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
+						if(qStr.substring(1,2) == "x") killIt(targetCell);
+						movePiece(piece, targetCell);
+						pieceLoc[piece] = targetCell;
+						turn = 1 - turn;
+						break;
+					}
+				}
+			}
+			allowedCells = [];
+			break;
+		case "B":
+			var cPiece = qColr + "b";
+			for(piece in pieceLoc)
+			{
+				if(piece.substring(0,2) == cPiece)
+				{
+					var curCell = pieceLoc[piece];
+					console.log("Checking "+piece+" base loc "+curCell);
+					var r = cols.indexOf(curCell.substring(0,1));
+					var c = rows.indexOf(curCell.substring(1,2));
+					crossPath(curCell);
+					if(allowedCells.indexOf(targetCell) > -1)
+					{
+						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
+						if(qStr.substring(1,2) == "x") killIt(targetCell);
+						movePiece(piece, targetCell);
+						pieceLoc[piece] = targetCell;
+						turn = 1 - turn;
+						break;
+					}
+				}
+			}
+			allowedCells = [];
+			break;
+		case "Q":
+			var cPiece = qColr + "q";
+			for(piece in pieceLoc)
+			{
+				if(piece.substring(0,2) == cPiece)
+				{
+					var curCell = pieceLoc[piece];
+					console.log("Checking "+piece+" base loc "+curCell);
+					var r = cols.indexOf(curCell.substring(0,1));
+					var c = rows.indexOf(curCell.substring(1,2));
+					traversePath(curCell,r,c,1,0);
+					traversePath(curCell,r,c,-1,0);
+					traversePath(curCell,r,c,0,1);
+					traversePath(curCell,r,c,0,-1);
+					crossPath(curCell);
+					if(allowedCells.indexOf(targetCell) > -1)
+					{
+						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
+						if(qStr.substring(1,2) == "x") killIt(targetCell);
+						movePiece(piece, targetCell);
+						pieceLoc[piece] = targetCell;
+						turn = 1 - turn;
+						break;
+					}
+				}
+			}
+			allowedCells = [];
+			break;
+		case "K":
+			var cPiece = qColr + "k";
+			for(piece in pieceLoc)
+			{
+				if(piece.substring(0,2) == cPiece)
+				{
+					var curCell = pieceLoc[piece];
+					console.log("Checking "+piece+" base loc "+curCell);
+					var r = cols.indexOf(curCell.substring(0,1));
+					var c = rows.indexOf(curCell.substring(1,2));
+					kingPath(curCell,r,c);
+					if(allowedCells.indexOf(targetCell) > -1)
+					{
+						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
+						if(qStr.substring(1,2) == "x") killIt(targetCell);
+						movePiece(piece, targetCell);
+						pieceLoc[piece] = targetCell;
+						turn = 1 - turn;
+						break;
+					}
+				}
+			}
+			allowedCells = [];
+			break;
+		case "P":
+			var cPiece = qColr + "p";
+			for(piece in pieceLoc)
+			{
+				if(qStr.substring(1,2) == "x")
+				{
+						var curCell = pieceLoc[piece];
+						console.log("Checking "+piece+" base loc "+curCell);
+						var r = cols.indexOf(curCell.substring(0,1));
+						var c = rows.indexOf(curCell.substring(1,2));
+						if(piece.substring(0,2) == cPiece)
+						{
+							var dir=0;
+							if(turn==0) {
+								dir=-1;
+							}
+							else {
+								dir=1;
+							}
+							console.log("*"+cols[r+1]+rows[(c+dir)%8]+" -"+cols[r+1]+rows[(c+dir)%8]);
+							if(r<7 && cols[r+1]+rows[(c+dir)%8]==targetCell)
+							{
+								killIt(targetCell);
+								movePiece(piece, targetCell);
+								pieceLoc[piece] = targetCell;
+								turn = 1 - turn;
+								break;
+							}
+							else if(r>0 && cols[r-1]+rows[(c+dir)%8]==targetCell)
+							{
+								killIt(targetCell);
+								movePiece(piece, targetCell);
+								pieceLoc[piece] = targetCell;
+								turn = 1 - turn;
+								break;
+							}
+						}
+						continue;
+				}
+				if(piece.substring(0,2) == cPiece)
+				{
+					var curCell = pieceLoc[piece];
+					console.log("Checking "+piece+" base loc "+curCell);
+					var r = cols.indexOf(curCell.substring(0,1));
+					var c = rows.indexOf(curCell.substring(1,2));
+					if(cols[r] != targetCell.substring(0, 1)) continue;
+					var dir=0, boun=0;
+					if(turn==0) {
+						dir=-1;
+						boun=7;
+					}
+					else {
+						dir=1;
+						boun=2;
+					}
+
+					var i=0, u=1;
+					if(rows[c] == ""+boun) u=2;
+					while(i<u)
+					{
+						c+=dir;
+						var cell = cols[r]+rows[c];
+						allowedCells.push(cell);
+						i++;
+					}
+					console.log(allowedCells);
+					if(allowedCells.indexOf(targetCell) > -1)
+					{
+						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
+						movePiece(piece, targetCell);
+						pieceLoc[piece] = targetCell;
+						turn = 1 - turn;
+						break;
+					}
+					allowedCells = [];
+				}
+			}
+			allowedCells = [];
+			break;
+	}
+}
+
 function findCell(pos) {
 	return cellNum[""+pos];
 }
@@ -19,7 +235,7 @@ function crossPath(currCell)
 }
 function traversePath(currCell,r,c,inr,inc)
 {
-	document.getElementById(currCell).style.backgroundColor = "yellow";
+	//document.getElementById(currCell).style.backgroundColor = "yellow";
 	var l = [""+currCell];
 	r+=inr;
 	c+=inc;
@@ -27,11 +243,11 @@ function traversePath(currCell,r,c,inr,inc)
 	{
 		var cell = cols[r]+rows[c];
 		var t = findPiece(cell);
-		if(t != "none") 
+		if(t != "none")
 		{
 			//console.log("$#"+t);
 			var top = t.substring(0,1);
-			if(top == turnColr[1-turn]) 
+			if(top == turnColr[1-turn])
 			{
 				allowedCells.push(cell);
 				console.log(""+allowedCells);
@@ -52,7 +268,7 @@ function traversePath(currCell,r,c,inr,inc)
 }
 function horsePath(currCell,r,c)
 {
-	if(r+2 < 8 && c+1 < 8 && (findPiece(cols[r+2]+rows[c+1]).substring(0,1) == turnColr[1-turn] || findPiece(cols[r+2]+rows[c+1]) == "none")) 
+	if(r+2 < 8 && c+1 < 8 && (findPiece(cols[r+2]+rows[c+1]).substring(0,1) == turnColr[1-turn] || findPiece(cols[r+2]+rows[c+1]) == "none"))
 	{
 		var cell = cols[r+2]+rows[c+1];
 		allowedCells.push(cell);
@@ -189,7 +405,7 @@ function loadKilled()
 	document.getElementById("black").innerHTML = "";
 	document.getElementById("white").innerHTML = "";
 	//console.log("Killed pieces: ");
-	for(var i in killedPiece) 
+	for(var i in killedPiece)
 	{
 		if(killedPiece[i] != '#')
 		{
@@ -197,7 +413,7 @@ function loadKilled()
 			{
 				document.getElementById("black").innerHTML += "<img src="+pics[piecePic[i]]+" width=20px>";
 			}
-			else document.getElementById("white").innerHTML += "<img src="+pics[piecePic[i]]+" width=20px>"; 
+			else document.getElementById("white").innerHTML += "<img src="+pics[piecePic[i]]+" width=20px>";
 			//console.log(i+" -> "+killedPiece[i]);
 		}
 	}
@@ -311,7 +527,7 @@ function checkPath(currCell,r,c,inr,inc,targetColr)
 	{
 		var cell = cols[r]+rows[c];
 		var t = findPiece(cell);
-		if(t != "none") 
+		if(t != "none")
 		{
 			//console.log("$#"+t);
 			var top = t.substring(0,1);
@@ -337,7 +553,7 @@ function selfCheck(targetColr)
 		{
 			//console.log("**Current piece: "+piece);
 			var result = isCheck(piece,targetColr);
-			if(result) 
+			if(result)
 			{
 				console.log("Threat detected by "+piece);
 				document.getElementById(pieceLoc[piece]).style.backgroundColor = "red";
@@ -381,7 +597,7 @@ function isCheckmate(targetColr)
 		{
 			console.log("Current piece for checkmate : "+piece);
 			var result = isPossible(piece,targetColr);
-			if(result) 
+			if(result)
 			{
 				console.log("Can be avoided by "+piece);
 				//document.getElementById(pieceLoc[piece]).style.backgroundColor = "yellow";
@@ -389,7 +605,7 @@ function isCheckmate(targetColr)
 			}
 		}
 	}
-	return true;		
+	return true;
 }
 function isPossible(piece,targetColr)
 {
@@ -436,7 +652,7 @@ function isPossible(piece,targetColr)
 						var oldPiece = findPiece(cell3);
 						pieceLoc[piece] = cell3;
 						if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-						if(!selfCheck(turnColr[1-turn%2])) 
+						if(!selfCheck(turnColr[1-turn%2]))
 						{
 							pieceLoc[oldPiece] = cell3;
 							pieceLoc[piece] = oldPlace;
@@ -448,7 +664,7 @@ function isPossible(piece,targetColr)
 						pieceLoc[piece] = oldPlace;
 					}
 				}
-				if(r-1 > -1) 
+				if(r-1 > -1)
 				{
 					if(findPiece(cell4).substring(0,1) == turnColr[turn])
 					{
@@ -456,7 +672,7 @@ function isPossible(piece,targetColr)
 						var oldPiece = findPiece(cell4);
 						pieceLoc[piece] = cell4;
 						if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-						if(!selfCheck(turnColr[1-turn%2])) 
+						if(!selfCheck(turnColr[1-turn%2]))
 						{
 							pieceLoc[oldPiece] = cell4;
 							pieceLoc[piece] = oldPlace;
@@ -468,13 +684,13 @@ function isPossible(piece,targetColr)
 						pieceLoc[piece] = oldPlace;
 					}
 				}
-				if(findPiece(cell1) == "none") 
+				if(findPiece(cell1) == "none")
 				{
 					var oldPlace = pieceLoc[piece];
 					var oldPiece = findPiece(cell1);
 					pieceLoc[piece] = cell1;
 					if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-					if(!selfCheck(turnColr[1-turn%2])) 
+					if(!selfCheck(turnColr[1-turn%2]))
 					{
 						pieceLoc[oldPiece] = cell1;
 						pieceLoc[piece] = oldPlace;
@@ -490,7 +706,7 @@ function isPossible(piece,targetColr)
 						var oldPiece = findPiece(cell1);
 						pieceLoc[piece] = cell1;
 						if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-						if(!selfCheck(turnColr[1-turn%2])) 
+						if(!selfCheck(turnColr[1-turn%2]))
 						{
 							pieceLoc[oldPiece] = cell2;
 							pieceLoc[piece] = oldPlace;
@@ -517,7 +733,7 @@ function isPossible(piece,targetColr)
 						var oldPiece = findPiece(cell3);
 						pieceLoc[piece] = cell3;
 						if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-						if(!selfCheck(turnColr[1-turn%2])) 
+						if(!selfCheck(turnColr[1-turn%2]))
 						{
 							pieceLoc[oldPiece] = cell3;
 							pieceLoc[piece] = oldPlace;
@@ -529,7 +745,7 @@ function isPossible(piece,targetColr)
 						pieceLoc[piece] = oldPlace;
 					}
 				}
-				if(r-1 > -1) 
+				if(r-1 > -1)
 				{
 					if(findPiece(cell4).substring(0,1) == turnColr[turn])
 					{
@@ -537,7 +753,7 @@ function isPossible(piece,targetColr)
 						var oldPiece = findPiece(cell4);
 						pieceLoc[piece] = cell4;
 						if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-						if(!selfCheck(turnColr[1-turn%2])) 
+						if(!selfCheck(turnColr[1-turn%2]))
 						{
 							pieceLoc[oldPiece] = cell4;
 							pieceLoc[piece] = oldPlace;
@@ -549,13 +765,13 @@ function isPossible(piece,targetColr)
 						pieceLoc[piece] = oldPlace;
 					}
 				}
-				if(findPiece(cell1) == "none") 
+				if(findPiece(cell1) == "none")
 				{
 					var oldPlace = pieceLoc[piece];
 					var oldPiece = findPiece(cell1);
 					pieceLoc[piece] = cell1;
 					if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-					if(!selfCheck(turnColr[1-turn%2])) 
+					if(!selfCheck(turnColr[1-turn%2]))
 					{
 						pieceLoc[oldPiece] = cell1;
 						pieceLoc[piece] = oldPlace;
@@ -571,7 +787,7 @@ function isPossible(piece,targetColr)
 						var oldPiece = findPiece(cell2);
 						pieceLoc[piece] = cell2;
 						if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-						if(!selfCheck(turnColr[1-turn%2])) 
+						if(!selfCheck(turnColr[1-turn%2]))
 						{
 							pieceLoc[oldPiece] = cell2;
 							pieceLoc[piece] = oldPlace;
@@ -596,7 +812,7 @@ function isPossible(piece,targetColr)
 						var oldPiece = findPiece(cell3);
 						pieceLoc[piece] = cell3;
 						if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-						if(!selfCheck(turnColr[1-turn%2])) 
+						if(!selfCheck(turnColr[1-turn%2]))
 						{
 							pieceLoc[oldPiece] = cell3;
 							pieceLoc[piece] = oldPlace;
@@ -608,7 +824,7 @@ function isPossible(piece,targetColr)
 						pieceLoc[piece] = oldPlace;
 					}
 				}
-				if(r-1 > -1) 
+				if(r-1 > -1)
 				{
 					if(findPiece(cell4).substring(0,1) == turnColr[turn])
 					{
@@ -616,7 +832,7 @@ function isPossible(piece,targetColr)
 						var oldPiece = findPiece(cell4);
 						pieceLoc[piece] = cell4;
 						if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-						if(!selfCheck(turnColr[1-turn%2])) 
+						if(!selfCheck(turnColr[1-turn%2]))
 						{
 							pieceLoc[oldPiece] = cell4;
 							pieceLoc[piece] = oldPlace;
@@ -628,13 +844,13 @@ function isPossible(piece,targetColr)
 						pieceLoc[piece] = oldPlace;
 					}
 				}
-				if(findPiece(cell1) == "none") 
+				if(findPiece(cell1) == "none")
 				{
 					var oldPlace = pieceLoc[piece];
 					var oldPiece = findPiece(cell1);
 					pieceLoc[piece] = cell1;
 					if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-					if(!selfCheck(turnColr[1-turn%2])) 
+					if(!selfCheck(turnColr[1-turn%2]))
 					{
 						pieceLoc[oldPiece] = cell1;
 						pieceLoc[piece] = oldPlace;
@@ -647,15 +863,15 @@ function isPossible(piece,targetColr)
 				}
 			}
 			return false;
-		case "k": 
-			if(r+1 < 8 && c+1 < 8 && (findPiece(cols[r+1]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c+1]) == "none")) 
+		case "k":
+			if(r+1 < 8 && c+1 < 8 && (findPiece(cols[r+1]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c+1]) == "none"))
 			{
 				var cell = cols[r+1]+rows[c+1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -665,16 +881,16 @@ function isPossible(piece,targetColr)
 				}
 				pieceLoc[oldPiece] = cell;
 				pieceLoc[piece] = oldPlace;
-				console.log("Moving to "+cols[r+1]+rows[c+1]+" unsafe"); 
+				console.log("Moving to "+cols[r+1]+rows[c+1]+" unsafe");
 			}
-			if(r+1 < 8 && c-1 >= 0 && (findPiece(cols[r+1]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c-1]) == "none")) 
+			if(r+1 < 8 && c-1 >= 0 && (findPiece(cols[r+1]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c-1]) == "none"))
 			{
 				var cell = cols[r+1]+rows[c-1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -686,14 +902,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r+1]+rows[c-1]+" unsafe");
 			}
-			if(r-1 >= 0 && c+1 < 8 && (findPiece(cols[r-1]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c+1]) == "none")) 
+			if(r-1 >= 0 && c+1 < 8 && (findPiece(cols[r-1]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c+1]) == "none"))
 			{
 				var cell = cols[r-1]+rows[c+1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -705,14 +921,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r-1]+rows[c+1]+" unsafe");
 			}
-			if(r-1 >= 0 && c-1 >= 0 && (findPiece(cols[r-1]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c-1]) == "none")) 
+			if(r-1 >= 0 && c-1 >= 0 && (findPiece(cols[r-1]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c-1]) == "none"))
 			{
 				var cell = cols[r-1]+rows[c-1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -724,14 +940,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r-1]+rows[c-1]+" unsafe");
 			}
-			if(r+1 < 8 && (findPiece(cols[r+1]+rows[c]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c]) == "none")) 
+			if(r+1 < 8 && (findPiece(cols[r+1]+rows[c]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c]) == "none"))
 			{
 				var cell = cols[r+1]+rows[c];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -743,14 +959,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r+1]+rows[c]+" unsafe");
 			}
-			if(c+1 < 8 && (findPiece(cols[r]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r]+rows[c+1]) == "none")) 
+			if(c+1 < 8 && (findPiece(cols[r]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r]+rows[c+1]) == "none"))
 			{
 				var cell = cols[r]+rows[c+1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -762,14 +978,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r]+rows[c+1]+" unsafe");
 			}
-			if(r-1 >= 0 && (findPiece(cols[r-1]+rows[c]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c]) == "none")) 
+			if(r-1 >= 0 && (findPiece(cols[r-1]+rows[c]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c]) == "none"))
 			{
 				var cell = cols[r-1]+rows[c];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -781,14 +997,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r-1]+rows[c]+" unsafe");
 			}
-			if(c-1 >= 0 && (findPiece(cols[r]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r]+rows[c-1]) == "none")) 
+			if(c-1 >= 0 && (findPiece(cols[r]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r]+rows[c-1]) == "none"))
 			{
 				var cell = cols[r]+rows[c-1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -802,14 +1018,14 @@ function isPossible(piece,targetColr)
 			}
 			return false;
 		case "n":
-			if(r+2 < 8 && c+1 < 8 && (findPiece(cols[r+2]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r+2]+rows[c+1]) == "none")) 
+			if(r+2 < 8 && c+1 < 8 && (findPiece(cols[r+2]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r+2]+rows[c+1]) == "none"))
 			{
 				var cell = cols[r+2]+rows[c+1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -819,16 +1035,16 @@ function isPossible(piece,targetColr)
 				}
 				pieceLoc[oldPiece] = cell;
 				pieceLoc[piece] = oldPlace;
-				console.log("Moving to "+cols[r+2]+rows[c+1]+" unsafe"); 
+				console.log("Moving to "+cols[r+2]+rows[c+1]+" unsafe");
 			}
-			if(r+2 < 8 && c-1 >= 0 && (findPiece(cols[r+2]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r+2]+rows[c-1]) == "none")) 
+			if(r+2 < 8 && c-1 >= 0 && (findPiece(cols[r+2]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r+2]+rows[c-1]) == "none"))
 			{
 				var cell = cols[r+2]+rows[c-1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -840,14 +1056,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r+2]+rows[c-1]+" unsafe");
 			}
-			if(r-2 >= 0 && c+1 < 8 && (findPiece(cols[r-2]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r-2]+rows[c+1]) == "none")) 
+			if(r-2 >= 0 && c+1 < 8 && (findPiece(cols[r-2]+rows[c+1]).substring(0,1) == turnColr[turn] || findPiece(cols[r-2]+rows[c+1]) == "none"))
 			{
 				var cell = cols[r-2]+rows[c+1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -859,14 +1075,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r-2]+rows[c+1]+" unsafe");
 			}
-			if(r-2 >= 0 && c-1 >= 0 && (findPiece(cols[r-2]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r-2]+rows[c-1]) == "none")) 
+			if(r-2 >= 0 && c-1 >= 0 && (findPiece(cols[r-2]+rows[c-1]).substring(0,1) == turnColr[turn] || findPiece(cols[r-2]+rows[c-1]) == "none"))
 			{
 				var cell = cols[r-2]+rows[c-1];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -878,14 +1094,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r-1]+rows[c-1]+" unsafe");
 			}
-			if(r+1 < 8 && c+2 < 8 && (findPiece(cols[r+1]+rows[c+2]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c+2]) == "none")) 
+			if(r+1 < 8 && c+2 < 8 && (findPiece(cols[r+1]+rows[c+2]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c+2]) == "none"))
 			{
 				var cell = cols[r+1]+rows[c+2];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -897,14 +1113,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r+1]+rows[c+2]+" unsafe");
 			}
-			if(r+1 < 8 && c-2 < 8 && (findPiece(cols[r+1]+rows[c-2]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c-2]) == "none")) 
+			if(r+1 < 8 && c-2 < 8 && (findPiece(cols[r+1]+rows[c-2]).substring(0,1) == turnColr[turn] || findPiece(cols[r+1]+rows[c-2]) == "none"))
 			{
 				var cell = cols[r+1]+rows[c-2];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -916,14 +1132,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r+1]+rows[c-2]+" unsafe");
 			}
-			if(r-1 >= 0 && c+2 < 8 && (findPiece(cols[r-1]+rows[c+2]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c+2]) == "none")) 
+			if(r-1 >= 0 && c+2 < 8 && (findPiece(cols[r-1]+rows[c+2]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c+2]) == "none"))
 			{
 				var cell = cols[r-1]+rows[c+2];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -935,14 +1151,14 @@ function isPossible(piece,targetColr)
 				pieceLoc[piece] = oldPlace;
 				console.log("Moving to "+cols[r-1]+rows[c+2]+" unsafe");
 			}
-			if(r-1 >=0 && c-2 >= 0 && (findPiece(cols[r-1]+rows[c-2]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c-2]) == "none")) 
+			if(r-1 >=0 && c-2 >= 0 && (findPiece(cols[r-1]+rows[c-2]).substring(0,1) == turnColr[turn] || findPiece(cols[r-1]+rows[c-2]) == "none"))
 			{
 				var cell = cols[r-1]+rows[c-2];
 				var oldPlace = pieceLoc[piece];
 				var oldPiece = findPiece(cell);
 				pieceLoc[piece] = cell;
 				if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-				if(!selfCheck(turnColr[1-turn%2])) 
+				if(!selfCheck(turnColr[1-turn%2]))
 				{
 					pieceLoc[oldPiece] = cell;
 					pieceLoc[piece] = oldPlace;
@@ -969,7 +1185,7 @@ function isPossible(piece,targetColr)
 			var oldPiece = findPiece(cell);
 			pieceLoc[element] = cell;
 			if(oldPiece != "none") pieceLoc[oldPiece] = '#';
-			if(!selfCheck(turnColr[1-turn%2])) 
+			if(!selfCheck(turnColr[1-turn%2]))
 			{
 				pieceLoc[oldPiece] = cell;
 				pieceLoc[element] = oldPlace;
@@ -998,7 +1214,7 @@ function castling(targetColr)
 		console.log("Inside");
 		if(findPiece("f"+rows[row]) == "none")
 		{
-			if(findPiece("g"+rows[row]) == "none") 
+			if(findPiece("g"+rows[row]) == "none")
 			{
 				console.log("g"+rows[row]);
 				allowedCells.push("g"+rows[row]);
