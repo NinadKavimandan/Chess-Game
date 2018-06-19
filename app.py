@@ -114,11 +114,12 @@ def welcomePlayer():
 	data['col'] = session.get('selfCol')
 	emit("welcome", str(json.dumps(data)), room=room)
 
-@socketio.on("queryExec")
+'''@socketio.on("queryExec")
 def changeState():
 	data = {}
+	room = session.get('room')
 	data['name'] = session.get('name')
-	emit("alterState", str(json.dumps(data)), room=room)
-
+	#emit("alterState", str(json.dumps(data)), room=room)
+'''
 if __name__ == "__main__":
 	socketio.run(app)

@@ -38,7 +38,6 @@ function informOtherUser(query)
 
 socket.on("incomingMove", function(data) {
 	data = JSON.parse(data);
-	console.log(data);
 	if(data.player != self)
 	{
 		queryExecutor(data.query);
@@ -52,24 +51,25 @@ socket.on("incomingMove", function(data) {
 		}
 		$('#'+p1).css({'color':'blue'});
 		$('#'+p2).css({'color':'black'});
-		socket.emit("queryExec", {});
+		//socket.emit("queryExec");
 	}
 });
 
-socket.on("alterState", function(data) {
-	data = JSON.parse(data);
-	if(self != data.name)
-	{
-		turn=1-turn;
-		if(turn==0) {
-			p1 = "whitepl";
-			p2 = "blackpl";
-		}
-		else {
-			p1 = "blackpl";
-			p2 = "whitepl";
-		}
-		$('#'+p1).css({'color':'blue'});
-		$('#'+p2).css({'color':'black'});
-	}
-});
+// socket.on("alterState", function(data) {
+// 	data = JSON.parse(data);
+// 	alert(self+" "+data.name);
+// 	if(self != data.name)
+// 	{
+// 		turn=1-turn;
+// 		if(turn==0) {
+// 			p1 = "whitepl";
+// 			p2 = "blackpl";
+// 		}
+// 		else {
+// 			p1 = "blackpl";
+// 			p2 = "whitepl";
+// 		}
+// 		$('#'+p1).css({'color':'blue'});
+// 		$('#'+p2).css({'color':'black'});
+// 	}
+// });

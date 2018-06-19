@@ -324,7 +324,12 @@ function initBoard() {
 			else turn++;
 			pieceLoc[element] = place;
 			pref = pref+place;
-			if(castledCells.indexOf(place) != -1) execCastle(turnColr[turn]);
+			if(castledCells.indexOf(place) != -1)
+			{
+				execCastle(turnColr[turn], place);
+				if(place.substring(0,1) == "g") pref = "O-O";
+				else pref = "O-O-O";
+			}
 			//console.log("Status="+event.reverted);
 			rePaint();
 			informOtherUser(pref);
@@ -402,16 +407,29 @@ function rePaint()
 		cellCount++;
 	}
 }
-function execCastle(targetColr)
+function execCastle(targetColr, place)
 {
-	var rook = ""+targetColr+"r2";
-	var rookPos = pieceLoc[rook];
-	var row = rows.indexOf(rookPos.substring(1,2));
-	var finalPos = "f"+rows[row];
-	pieceLoc[rook] = finalPos;
-	var leftCor = $("#"+finalPos).position().left - $("#"+rook).position().left;
-	console.log(""+leftCor);
-	$("#"+rook).animate({left: leftCor},200);
+	if(place.substring(0,1) == "g")
+	{
+		var rook = ""+targetColr+"r2";
+		var rookPos = pieceLoc[rook];
+		var row = rows.indexOf(rookPos.substring(1,2));
+		var finalPos = "f"+rows[row];
+		pieceLoc[rook] = finalPos;
+		var leftCor = $("#"+finalPos).position().left - $("#"+rook).position().left;
+		console.log(""+leftCor);
+		$("#"+rook).animate({left: leftCor},200);
+	}
+	else {
+		var rook = ""+targetColr+"r1";
+		var rookPos = pieceLoc[rook];
+		var row = rows.indexOf(rookPos.substring(1,2));
+		var finalPos = "d"+rows[row];
+		pieceLoc[rook] = finalPos;
+		var leftCor = -($("#"+finalPos).position().left - $("#"+rook).position().left);
+		console.log(""+leftCor);
+		$("#"+rook).animate({right: leftCor},200);
+	}
 }
 function rePosition()
 {

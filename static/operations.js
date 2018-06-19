@@ -4,6 +4,12 @@ function getElePrefix(ele)
 }
 function queryExecutor(qStr)
 {
+	if(qStr.substring(0,1) == "O")
+	{
+		Qcastling(qStr);
+		turn = 1-turn;
+		return;
+	}
 	var piece =  qStr.substring(0,1);
 	var qColr = turnColr[turn];
 	var len = qStr.length;
@@ -233,6 +239,44 @@ function crossPath(currCell)
 	traversePath(currCell,r,c,1,-1);
 	traversePath(currCell,r,c,-1,-1);
 }
+
+function Qcastling(qStr)
+{
+	if(qStr == "O-O")
+	{
+		var targetColr = turnColr[turn];
+		var rook = ""+targetColr+"r2";
+		var king = targetColr+"k";
+		var rookPos = pieceLoc[rook];
+		var row = rows.indexOf(rookPos.substring(1,2));
+		var finalPos = "f"+rows[row];
+		var finalPosK = "g"+rows[row];
+		pieceLoc[rook] = finalPos;
+		pieceLoc[king] = finalPosK;
+		var leftCor = $("#"+finalPos).position().left - $("#"+rook).position().left;
+		console.log(""+leftCor);
+		var leftCorK = $("#"+king).position().left - $("#"+finalPosK).position().left;
+		$("#"+rook).animate({left: leftCor},200);
+		$("#"+king).animate({right: leftCorK},200);
+	}
+	else {
+		var targetColr = turnColr[turn];
+		var rook = ""+targetColr+"r1";
+		var king = targetColr+"k";
+		var rookPos = pieceLoc[rook];
+		var row = rows.indexOf(rookPos.substring(1,2));
+		var finalPos = "d"+rows[row];
+		var finalPosK = "c"+rows[row];
+		pieceLoc[rook] = finalPos;
+		pieceLoc[king] = finalPosK;
+		var leftCor = $("#"+finalPos).position().left - $("#"+rook).position().left;
+		console.log(""+leftCor);
+		var leftCorK = $("#"+king).position().left - $("#"+finalPosK).position().left;
+		$("#"+rook).animate({left: leftCor},200);
+		$("#"+king).animate({right: leftCorK},200);
+	}
+}
+
 function traversePath(currCell,r,c,inr,inc)
 {
 	//document.getElementById(currCell).style.backgroundColor = "yellow";
@@ -1222,6 +1266,17 @@ function castling(targetColr)
 				//document.getElementById("g"+rows[row]).style.backgroundColor = "blue";
 				isCastle = true;
 			}
+		}
+	}
+	if(kingPos == currentPos && pieceLoc[""+targetColr+"r1"] == "a"+rows[row])
+	{
+		if(findPiece("d"+rows[row]) == "none" && findPiece("c"+rows[row]) == "none" && findPiece("b"+rows[row]) == "none")
+		{
+				console.log("c"+rows[row]);
+				allowedCells.push("c"+rows[row]);
+				castledCells.push("c"+rows[row]);
+				//document.getElementById("g"+rows[row]).style.backgroundColor = "blue";
+				isCastle = true;
 		}
 	}
 }
