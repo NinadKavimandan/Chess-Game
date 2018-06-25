@@ -56,3 +56,23 @@ div#loginBox {
   opacity: 0.8;
   text-align: center;
 }
+.avPl {
+	padding: 2px;
+	margin: auto;
+	width: 80%;
+	font-size: 20px;
+	line-height: 20px;
+	border-radius: 5px;
+	border: 1px solid green;
+	color: green;
+}
+.unPl {
+	padding: 2px;
+	margin: auto;
+	width: 80%;
+	font-size: 20px;
+	line-height: 20px;
+	border-radius: 5px;
+	border: 1px solid #333;
+	color: #333;
+}

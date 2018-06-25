@@ -2,228 +2,25 @@ function getElePrefix(ele)
 {
 	return ele.toUpperCase()[1];
 }
-function queryExecutor(qStr)
+function queryExecutor(qStr, piece)
 {
+	console.log("Here");
+	console.log("Piece = "+piece);
 	if(qStr.substring(0,1) == "O")
 	{
 		Qcastling(qStr);
 		turn = 1-turn;
 		return;
 	}
-	var piece =  qStr.substring(0,1);
+	//var piece =  qStr.substring(0,1);
 	var qColr = turnColr[turn];
 	var len = qStr.length;
 	var targetCell = qStr.substring(len-2, len);
 	console.log("Target: "+targetCell);
-	switch(piece)
-	{
-		case "N":
-			var cPiece = qColr + "n";
-			for(piece in pieceLoc)
-			{
-				if(piece.substring(0,2) == cPiece)
-				{
-					var curCell = pieceLoc[piece];
-					console.log("Checking "+piece+" base loc "+curCell);
-					var r = cols.indexOf(curCell.substring(0,1));
-					var c = rows.indexOf(curCell.substring(1,2));
-					horsePath(curCell, r, c);
-					if(allowedCells.indexOf(targetCell) > -1)
-					{
-						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
-						if(qStr.substring(1,2) == "x") killIt(targetCell);
-						movePiece(piece, targetCell);
-						pieceLoc[piece] = targetCell;
-						turn = 1 - turn;
-						break;
-					}
-				}
-			}
-			allowedCells = [];
-			break;
-		case "R":
-			var cPiece = qColr + "r";
-			for(piece in pieceLoc)
-			{
-				if(piece.substring(0,2) == cPiece)
-				{
-					var curCell = pieceLoc[piece];
-					console.log("Checking "+piece+" base loc "+curCell);
-					var r = cols.indexOf(curCell.substring(0,1));
-					var c = rows.indexOf(curCell.substring(1,2));
-					traversePath(curCell,r,c,1,0);
-					traversePath(curCell,r,c,-1,0);
-					traversePath(curCell,r,c,0,1);
-					traversePath(curCell,r,c,0,-1);
-					if(allowedCells.indexOf(targetCell) > -1)
-					{
-						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
-						if(qStr.substring(1,2) == "x") killIt(targetCell);
-						movePiece(piece, targetCell);
-						pieceLoc[piece] = targetCell;
-						turn = 1 - turn;
-						break;
-					}
-				}
-			}
-			allowedCells = [];
-			break;
-		case "B":
-			var cPiece = qColr + "b";
-			for(piece in pieceLoc)
-			{
-				if(piece.substring(0,2) == cPiece)
-				{
-					var curCell = pieceLoc[piece];
-					console.log("Checking "+piece+" base loc "+curCell);
-					var r = cols.indexOf(curCell.substring(0,1));
-					var c = rows.indexOf(curCell.substring(1,2));
-					crossPath(curCell);
-					if(allowedCells.indexOf(targetCell) > -1)
-					{
-						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
-						if(qStr.substring(1,2) == "x") killIt(targetCell);
-						movePiece(piece, targetCell);
-						pieceLoc[piece] = targetCell;
-						turn = 1 - turn;
-						break;
-					}
-				}
-			}
-			allowedCells = [];
-			break;
-		case "Q":
-			var cPiece = qColr + "q";
-			for(piece in pieceLoc)
-			{
-				if(piece.substring(0,2) == cPiece)
-				{
-					var curCell = pieceLoc[piece];
-					console.log("Checking "+piece+" base loc "+curCell);
-					var r = cols.indexOf(curCell.substring(0,1));
-					var c = rows.indexOf(curCell.substring(1,2));
-					traversePath(curCell,r,c,1,0);
-					traversePath(curCell,r,c,-1,0);
-					traversePath(curCell,r,c,0,1);
-					traversePath(curCell,r,c,0,-1);
-					crossPath(curCell);
-					if(allowedCells.indexOf(targetCell) > -1)
-					{
-						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
-						if(qStr.substring(1,2) == "x") killIt(targetCell);
-						movePiece(piece, targetCell);
-						pieceLoc[piece] = targetCell;
-						turn = 1 - turn;
-						break;
-					}
-				}
-			}
-			allowedCells = [];
-			break;
-		case "K":
-			var cPiece = qColr + "k";
-			for(piece in pieceLoc)
-			{
-				if(piece.substring(0,2) == cPiece)
-				{
-					var curCell = pieceLoc[piece];
-					console.log("Checking "+piece+" base loc "+curCell);
-					var r = cols.indexOf(curCell.substring(0,1));
-					var c = rows.indexOf(curCell.substring(1,2));
-					kingPath(curCell,r,c);
-					if(allowedCells.indexOf(targetCell) > -1)
-					{
-						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
-						if(qStr.substring(1,2) == "x") killIt(targetCell);
-						movePiece(piece, targetCell);
-						pieceLoc[piece] = targetCell;
-						turn = 1 - turn;
-						break;
-					}
-				}
-			}
-			allowedCells = [];
-			break;
-		case "P":
-			var cPiece = qColr + "p";
-			for(piece in pieceLoc)
-			{
-				if(qStr.substring(1,2) == "x")
-				{
-						var curCell = pieceLoc[piece];
-						console.log("Checking "+piece+" base loc "+curCell);
-						var r = cols.indexOf(curCell.substring(0,1));
-						var c = rows.indexOf(curCell.substring(1,2));
-						if(piece.substring(0,2) == cPiece)
-						{
-							var dir=0;
-							if(turn==0) {
-								dir=-1;
-							}
-							else {
-								dir=1;
-							}
-							console.log("*"+cols[r+1]+rows[(c+dir)%8]+" -"+cols[r+1]+rows[(c+dir)%8]);
-							if(r<7 && cols[r+1]+rows[(c+dir)%8]==targetCell)
-							{
-								killIt(targetCell);
-								movePiece(piece, targetCell);
-								pieceLoc[piece] = targetCell;
-								turn = 1 - turn;
-								break;
-							}
-							else if(r>0 && cols[r-1]+rows[(c+dir)%8]==targetCell)
-							{
-								killIt(targetCell);
-								movePiece(piece, targetCell);
-								pieceLoc[piece] = targetCell;
-								turn = 1 - turn;
-								break;
-							}
-						}
-						continue;
-				}
-				if(piece.substring(0,2) == cPiece)
-				{
-					var curCell = pieceLoc[piece];
-					console.log("Checking "+piece+" base loc "+curCell);
-					var r = cols.indexOf(curCell.substring(0,1));
-					var c = rows.indexOf(curCell.substring(1,2));
-					if(cols[r] != targetCell.substring(0, 1)) continue;
-					var dir=0, boun=0;
-					if(turn==0) {
-						dir=-1;
-						boun=7;
-					}
-					else {
-						dir=1;
-						boun=2;
-					}
-
-					var i=0, u=1;
-					if(rows[c] == ""+boun) u=2;
-					while(i<u)
-					{
-						c+=dir;
-						var cell = cols[r]+rows[c];
-						allowedCells.push(cell);
-						i++;
-					}
-					console.log(allowedCells);
-					if(allowedCells.indexOf(targetCell) > -1)
-					{
-						console.log("Moving "+piece+" from "+curCell+" to "+targetCell);
-						movePiece(piece, targetCell);
-						pieceLoc[piece] = targetCell;
-						turn = 1 - turn;
-						break;
-					}
-					allowedCells = [];
-				}
-			}
-			allowedCells = [];
-			break;
-	}
+	if(qStr.substring(1, 2) == "x") killIt(targetCell);
+	movePiece(piece, targetCell);
+	pieceLoc[piece] = targetCell;
+	turn = 1-turn;
 }
 
 function findCell(pos) {

@@ -332,7 +332,7 @@ function initBoard() {
 			}
 			//console.log("Status="+event.reverted);
 			rePaint();
-			informOtherUser(pref);
+			informOtherUser(pref, element);
 			if(isCheck(element,turnColr[1-turn]))
 			{
 				console.log(""+kingName[turn]+" under check!");
@@ -353,6 +353,7 @@ function initBoard() {
 							$(this).animate(pos,200,"linear");
 						}
 					});
+					displayWinnerTab(turn);
 					return;
 				}
 			}
@@ -451,6 +452,7 @@ function rePosition()
 
 function movePiece(curPiece, targetLoc)
 {
+	console.log("piece "+curPiece+" target "+targetLoc);
 	$("#"+curPiece).position({
 		of: $("#"+targetLoc),
 		my: "center",
@@ -459,4 +461,19 @@ function movePiece(curPiece, targetLoc)
 			$(this).animate(pos,50,"linear");
 		}
 	});
+}
+
+function displayWinnerTab(wcol)
+{
+	if(wcol==0) p = "whitepl";
+	else p = "blackpl";
+	$('#'+p).css({'color':'green'});
+	var outer = document.createElement("div");
+	outer.id = "container";
+	var inner = document.createElement("div");
+	inner.id = "rtab";
+	if(wcol == mcol) inner.innerHTML = "</br>You won!";
+	else inner.innerHTML = "</br>You lost!";
+	outer.appendChild(inner);
+	document.body.appendChild(outer);
 }

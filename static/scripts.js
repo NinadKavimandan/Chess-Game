@@ -31,16 +31,27 @@ socket.on("welcome", function(data) {
 	}
 });
 
-function informOtherUser(query)
+function informOtherUser(query, element)
 {
-	socket.emit("nextMove", {"query": query, "player": self});
+	socket.emit("nextMove", {"query": query, "player": self, "piece": element});
 }
 
 socket.on("incomingMove", function(data) {
 	data = JSON.parse(data);
 	if(data.player != self)
 	{
-		queryExecutor(data.query);
+		queryExecutor(data.query, data.piece);
+		turn = 1-turn;
+		if(isCheck(data.piece, turnColr[1-turn]))
+		{
+			console.log(""+kingName[turn]+" under check!");
+			if(isCheckmate(turnColr[1-turn])) 
+			{
+				displayWinnerTab(turn);
+				return;
+			}
+		}
+		turn = 1-turn;
 		if(turn==0) {
 			p1 = "whitepl";
 			p2 = "blackpl";

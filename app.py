@@ -60,7 +60,9 @@ def forwardNextMove(data):
 
 @socketio.on("connected")
 def updateLiveUserCnt():
-	emit("newjoinee", {}, broadcast=True)
+	data = {}
+	data['player'] = session.get('name')
+	emit("newjoinee", str(json.dumps(data)), broadcast=True)
 
 @socketio.on("ready")
 def findFreePlayer():
