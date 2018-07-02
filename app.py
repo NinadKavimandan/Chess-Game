@@ -4,6 +4,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 from forms import LoginForm
 import json
 from random import randint
+import time
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 CORS(app)
@@ -62,7 +63,26 @@ def forwardNextMove(data):
 def updateLiveUserCnt():
 	data = {}
 	data['player'] = session.get('name')
+	emit('welcomepl', str(json.dumps(data)))
+	#time.sleep(1)
+	data['status'] = 0
+	data['target'] = request.sid
 	emit("newjoinee", str(json.dumps(data)), broadcast=True)
+
+@socketio.on("sendmyinfo")
+def sendinfo(data):
+	df = {}
+	df['player'] = session.get('name')
+	df['status'] = 0
+	df['target'] = request.sid
+	emit('updatePlList', str(json.dumps(df)), room=data['target'])
+
+@socketio.on("unavPlInfo")
+def sendAvInfo(data):
+	df = {}
+	df['player'] = session.get('name')
+	df['status'] = 1
+	emit('updatePlList', str(json.dumps(df)), room=data['target'])
 
 @socketio.on("ready")
 def findFreePlayer():
@@ -86,6 +106,34 @@ def defineGame(data):
 	cdata['color'] = randint(0,1)
 	session['selfCol'] = cdata['color']
 	emit('fetchOpponent', str(json.dumps(cdata)), room=data['room'])
+
+@socketio.on("sendinvite")
+def sendingIV(data):
+	data = json.loads(data)
+	print (data)
+	emit("incomingInvite", str(json.dumps(data)), room=data['target'])
+
+@socketio.on("inviteAccpted")
+def accIv(data):
+	data = json.loads(data)
+	df = {}
+	df['name'] = data['oppo']
+	df['oppo'] = data['name']
+	df['col'] = randint(0,1)
+	data['col'] = 1-df['col']
+	df['url'] = url_for('.play')
+	data['url'] = df['url']
+	df['room'] = randint(0,1000)
+	data['room'] = df['room']
+	emit("accepted", str(json.dumps(df)), room=data['target'])
+	emit("accepted", str(json.dumps(data)))
+	emit("updateStatus", str(json.dumps(data)), broadcast=True)
+
+@socketio.on("inviteRejected")
+def rejIv(data):
+	data = json.loads(data)
+	emit("rejected", str(json.dumps(data)), room=data['target'])
+
 
 @socketio.on("fetched")
 def initGame(data):

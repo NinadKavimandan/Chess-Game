@@ -65,7 +65,9 @@ socket.on("incomingMove", function(data) {
 		//socket.emit("queryExec");
 	}
 });
-
+socket.on("newjoinee", function(data) {
+	socket.emit("unavPlInfo", JSON.parse(data));
+});
 // socket.on("alterState", function(data) {
 // 	data = JSON.parse(data);
 // 	alert(self+" "+data.name);
